@@ -129,6 +129,31 @@ export function Facility() {
         <ringGeometry args={[1.4, 1.6, 48]} />
         <meshBasicMaterial color="#ff4655" toneMapped={false} />
       </mesh>
+      {/* tactical markings / decals */}
+      {[-12, -4, 4, 12].map((x) => (
+        <mesh key={`decal-${x}`} rotation-x={-Math.PI / 2} position={[x, 0.02, -8]}>
+          <planeGeometry args={[4, 0.1]} />
+          <meshBasicMaterial color="#3a3f4a" />
+        </mesh>
+      ))}
+      {/* wall terminals / screens */}
+      {[-16, -8, 8, 16].map((x, i) => (
+        <group key={`screen-${x}`} position={[x, 2.5, -ROOM.d / 2 + 0.05]}>
+          <mesh castShadow>
+            <boxGeometry args={[3.2, 1.8, 0.1]} />
+            <meshStandardMaterial color="#14171d" metalness={0.6} roughness={0.3} />
+          </mesh>
+          <mesh position-z={0.06}>
+            <planeGeometry args={[3, 1.6]} />
+            <meshBasicMaterial color={i % 2 === 0 ? "#122a2a" : "#2a1212"} toneMapped={false} />
+          </mesh>
+          {/* Simulated code/graph on screen */}
+          <mesh position={[-1, 0, 0.07]}>
+             <planeGeometry args={[0.5, 1.2]} />
+             <meshBasicMaterial color={i % 2 === 0 ? "#2fd3c4" : "#ff4655"} transparent opacity={0.4} toneMapped={false} />
+          </mesh>
+        </group>
+      ))}
     </group>
   );
 }

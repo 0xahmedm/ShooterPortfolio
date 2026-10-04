@@ -23,6 +23,7 @@ export function Player() {
   const vel = useRef(new THREE.Vector3());
   const gun = useRef<THREE.Group>(null);
   const flash = useRef<THREE.Mesh>(null);
+  const innerFlash = useRef<THREE.Mesh>(null);
   const flashLight = useRef<THREE.PointLight>(null);
   const recoil = useRef(0);
   const lastShot = useRef(-1);
@@ -68,8 +69,8 @@ export function Player() {
       if (!hit) return;
       // impact spark
       const m = new THREE.Mesh(
-        new THREE.SphereGeometry(0.06, 8, 8),
-        new THREE.MeshBasicMaterial({ color: "#ffd8a8", transparent: true, toneMapped: false }),
+        new THREE.IcosahedronGeometry(0.08, 0),
+        new THREE.MeshBasicMaterial({ color: "#ffd8a8", transparent: true, toneMapped: false, wireframe: true }),
       );
       m.userData['noHit'] = true;
       m.position.copy(hit.point);
@@ -132,21 +133,45 @@ export function Player() {
     Object.values(sections).forEach((s) => pushBox(s.position[0], s.position[2], 1));
 
     const speed = vel.current.length();
-    bob.current += dt * speed * 1.6;
-    p.y = EYE + Math.sin(bob.current * 2) * 0.03 * Math.min(speed / SPEED, 1);
+    bob.current += dt * (speed > 0.1 ? speed * 1.6 : 2); // idle bob vs walk bob
+    
+    // camera headbob
+    const bobY = Math.sin(bob.current * 2) * 0.03 * Math.min(speed / SPEED, 1);
+    const bobX = Math.cos(bob.current) * 0.015 * Math.min(speed / SPEED, 1);
+    
+    // camera translation recoil
+    const camRecoilZ = recoil.current * 0.05;
+    
+    p.y = EYE + bobY;
+    p.x += bobX;
+    p.addScaledVector(fwd, -camRecoilZ); // push camera back slightly on shoot
 
     // weapon follows camera
     recoil.current = Math.max(0, recoil.current - dt * 9);
     if (gun.current) {
-      const r = recoil.current;
-      const m = speed / SPEED;
-      gun.current.position.set(0.2 + Math.cos(bob.current) * 0.01 * m, -0.17 + Math.abs(Math.sin(bob.current)) * 0.012 * m, -0.42 + r * 0.06);
-      gun.current.rotation.set(r * 0.12, 0, 0);
+      const r = Math.pow(recoil.current, 1.5); // Snappier recoil
+      const m = speed > 0.1 ? speed / SPEED : 0.2; // Idle motion
+      gun.current.position.set(
+        0.2 + Math.cos(bob.current) * 0.01 * m, 
+        -0.17 + Math.abs(Math.sin(bob.current)) * 0.012 * m, 
+        -0.42 + r * 0.1
+      );
+      gun.current.rotation.set(r * 0.18, 0, r * 0.05); // Twist slightly on recoil
     }
+    
+    // Re-adjust camera position so the backward push doesn't accumulate
+    p.addScaledVector(fwd, camRecoilZ);
+    p.x -= bobX;
+    
     const f = recoil.current > 0.7 ? 1 : 0;
     if (flash.current) {
       flash.current.visible = f > 0;
       flash.current.rotation.z = Math.random() * Math.PI;
+    }
+    if (innerFlash.current) {
+      innerFlash.current.visible = f > 0;
+      (innerFlash.current.material as THREE.MeshBasicMaterial).opacity = f;
+      innerFlash.current.rotation.z = Math.random() * Math.PI;
     }
     if (flashLight.current) flashLight.current.intensity = f * 8;
 
@@ -155,9 +180,11 @@ export function Player() {
     impacts.current = impacts.current.filter((i) => {
       const a = now - i.born;
       const mat = i.mesh.material as THREE.MeshBasicMaterial;
-      mat.opacity = Math.max(0, 1 - a / 0.6);
-      i.mesh.scale.setScalar(1 + a * 3);
-      if (a > 0.6) {
+      mat.opacity = Math.max(0, 1 - a / 0.4); // Faster fade
+      i.mesh.scale.setScalar(1 + a * 6); // Faster expansion
+      i.mesh.rotation.y += dt * 5;
+      i.mesh.rotation.x += dt * 5;
+      if (a > 0.4) {
         scene.remove(i.mesh);
         i.mesh.geometry.dispose();
         mat.dispose();
@@ -192,10 +219,15 @@ export function Player() {
           <meshBasicMaterial color="#ff4655" toneMapped={false} />
         </mesh>
         <mesh ref={flash} userData={{ noHit: true }} position={[0, 0.03, -0.48]} visible={false}>
-          <planeGeometry args={[0.22, 0.22]} />
-          <meshBasicMaterial color="#ffd27a" transparent opacity={0.9} toneMapped={false} side={THREE.DoubleSide} />
+          <planeGeometry args={[0.25, 0.25]} />
+          <meshBasicMaterial color="#ffc16b" transparent opacity={0.9} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
-        <pointLight ref={flashLight} position={[0, 0.03, -0.55]} color="#ffb860" intensity={0} distance={5} />
+        <mesh ref={innerFlash} userData={{ noHit: true }} position={[0, 0.03, -0.52]} visible={false}>
+          {/* Star-like inner flash */}
+          <planeGeometry args={[0.15, 0.15]} />
+          <meshBasicMaterial color="#ffffff" transparent toneMapped={false} side={THREE.DoubleSide} />
+        </mesh>
+        <pointLight ref={flashLight} position={[0, 0.03, -0.55]} color="#ffb860" intensity={0} distance={6} decay={1.5} />
       </group>
     </>
   );

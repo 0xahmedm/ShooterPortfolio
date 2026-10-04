@@ -12,6 +12,7 @@ function Target({ id }: { id: SectionId }) {
   const s = sections[id];
   const disc = useRef<THREE.Group>(null);
   const glow = useRef<THREE.MeshBasicMaterial>(null);
+  const light = useRef<THREE.PointLight>(null);
   const label = useMemo(
     () =>
       labelTexture([
@@ -27,14 +28,18 @@ function Target({ id }: { id: SectionId }) {
     const t = clock.elapsedTime;
     const since = t - (targetHits[id] ?? -10);
     if (disc.current) {
-      disc.current.position.y = 2.4 + Math.sin(t * 1.4 + s.position[0]) * 0.08;
-      const kick = since < 0.5 ? Math.sin(since * 30) * Math.exp(-since * 8) * 0.6 : 0;
+      disc.current.position.y = 2.4 + Math.sin(t * 1.4 + s.position[0]) * 0.12;
+      const kick = since < 0.5 ? Math.sin(since * 40) * Math.exp(-since * 10) * 0.8 : 0;
       disc.current.rotation.x = -kick;
-      disc.current.rotation.y = since < 0.6 ? since * Math.PI * 4 * (1 - since / 0.6) : 0;
+      disc.current.rotation.y = t * 0.3 + (since < 0.6 ? since * Math.PI * 6 * (1 - since / 0.6) : 0);
     }
     if (glow.current) {
       const f = since < 0.4 ? 1 - since / 0.4 : 0;
       glow.current.color.copy(color).lerp(new THREE.Color("#ffffff"), f);
+    }
+    if (light.current) {
+      const f = since < 0.4 ? 1 - since / 0.4 : 0;
+      light.current.intensity = 6 + f * 10;
     }
   });
 
@@ -71,7 +76,7 @@ function Target({ id }: { id: SectionId }) {
         <planeGeometry args={[4.2, 1.64]} />
         <meshBasicMaterial map={label} transparent toneMapped={false} />
       </mesh>
-      <pointLight position={[0, 3, 1.5]} color={s.color} intensity={6} distance={7} />
+      <pointLight ref={light} position={[0, 3, 1.5]} color={s.color} intensity={6} distance={7} />
     </group>
   );
 }

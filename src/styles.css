@@ -201,9 +201,25 @@
   }
 
   .hud-panel {
+    position: relative;
     background: color-mix(in oklch, var(--card) 92%, transparent);
     border: 1px solid var(--border);
-    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--sec, #ff4655) 35%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--sec, #ff4655) 50%, transparent),
+                0 0 40px color-mix(in oklch, var(--sec, #ff4655) 10%, transparent);
+  }
+  
+  .hud-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      transparent,
+      transparent 2px,
+      color-mix(in oklch, var(--sec, #ff4655) 4%, transparent) 2px,
+      color-mix(in oklch, var(--sec, #ff4655) 4%, transparent) 4px
+    );
+    z-index: -1;
   }
 
   .hud-card {

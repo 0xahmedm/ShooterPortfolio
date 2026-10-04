@@ -6,6 +6,7 @@ import { sections, type SectionId } from "@/data/portfolio";
 import { game } from "./store";
 import { ProjectDatabase } from "./ProjectDatabase";
 import { EducationRecords, PersonnelRecord, SkillRecords } from "./PortfolioRecords";
+import { playUiOpen, playUiClose } from "./audio";
 
 export function lockPointer() {
   document.querySelector("canvas")?.requestPointerLock();
@@ -20,7 +21,13 @@ function Body({ id }: { id: SectionId }) {
 
 export function Panel({ id }: { id: SectionId }) {
   const s = sections[id];
+  
+  useEffect(() => {
+    playUiOpen();
+  }, []);
+  
   const close = () => {
+    playUiClose();
     game.set({ open: null });
     lockPointer();
   };
