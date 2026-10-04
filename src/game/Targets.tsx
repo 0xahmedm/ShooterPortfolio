@@ -19,7 +19,7 @@ function Target({ id }: { id: SectionId }) {
         { text: s.code, size: 70, color: s.color, spacing: 6 },
         { text: s.label, size: 92, color: "#f4f5f7", spacing: 8 },
         { text: "SHOOT TO OPEN", size: 34, color: "#8a919e", spacing: 10, weight: 500 },
-      ], 1024, 400),
+      ], 1024, 400, "rgba(0,0,0,0.6)", s.color),
     [s],
   );
   const color = useMemo(() => new THREE.Color(s.color), [s]);

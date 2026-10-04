@@ -202,12 +202,22 @@
 
   .hud-panel {
     position: relative;
-    background: color-mix(in oklch, var(--card) 92%, transparent);
+    background: color-mix(in oklch, var(--background) 90%, transparent);
     border: 1px solid var(--border);
-    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--sec, #ff4655) 50%, transparent),
-                0 0 40px color-mix(in oklch, var(--sec, #ff4655) 10%, transparent);
+    box-shadow: inset 0 0 30px color-mix(in oklch, var(--sec, #ff4655) 15%, transparent),
+                0 0 50px color-mix(in oklch, var(--sec, #ff4655) 10%, transparent);
+    backdrop-filter: blur(12px);
   }
   
+  .hud-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--sec, #ff4655) 50%, transparent);
+    z-index: 10;
+  }
+
   .hud-panel::after {
     content: "";
     position: absolute;
@@ -216,10 +226,29 @@
     background: repeating-linear-gradient(
       transparent,
       transparent 2px,
-      color-mix(in oklch, var(--sec, #ff4655) 4%, transparent) 2px,
-      color-mix(in oklch, var(--sec, #ff4655) 4%, transparent) 4px
+      color-mix(in oklch, var(--sec, #ff4655) 6%, transparent) 2px,
+      color-mix(in oklch, var(--sec, #ff4655) 6%, transparent) 4px
     );
     z-index: -1;
+    animation: scanline 15s linear infinite;
+  }
+
+  @keyframes scanline {
+    from { background-position: 0 0; }
+    to { background-position: 0 200px; }
+  }
+
+  .crt-flicker {
+    animation: flicker 4s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+      opacity: 1;
+    }
+    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+      opacity: 0.95;
+    }
   }
 
   .hud-card {
@@ -244,6 +273,21 @@
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--muted-foreground);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 1px solid var(--border);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--sec, var(--primary)) 40%, transparent);
+    border-left: 1px solid var(--sec, var(--primary));
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--sec, var(--primary)) 60%, transparent);
   }
 
   .project-database {
@@ -299,6 +343,11 @@
     position: absolute;
     right: 0.6rem;
     bottom: 0.6rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border);
+    color: white;
   }
 
   .tech-label {
