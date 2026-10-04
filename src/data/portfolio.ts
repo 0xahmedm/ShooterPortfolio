@@ -49,10 +49,10 @@ export const about = {
   location: "Cairo, Egypt",
   email: "ahmedmahmoud15520034@gmail.com",
   socials: [
-    { label: "GitHub", href: undefined },
-    { label: "LinkedIn", href: undefined },
-    { label: "itch.io", href: undefined },
-    { label: "X", href: undefined },
+    { label: "GitHub" },
+    { label: "LinkedIn" },
+    { label: "itch.io" },
+    { label: "X" },
   ] as { label: string; href?: string }[],
 };
 
