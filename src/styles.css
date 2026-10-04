@@ -19,6 +19,7 @@
  */
 
 @theme inline {
+  --font-display: "Chakra Petch", "Arial Narrow", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -140,5 +141,249 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+}
+
+@layer components {
+  .hud-kicker {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .hud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid;
+    padding: 0.28rem 0.55rem;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: color-mix(in oklch, var(--background) 70%, transparent);
+  }
+
+  .hud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ff4655;
+    background: #ff4655;
+    color: #14171d;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.4rem;
+    cursor: pointer;
+  }
+
+  .hud-btn:hover {
+    background: color-mix(in oklch, #ff4655 85%, white);
+  }
+
+  .hud-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+    padding: 0.45rem;
+    cursor: pointer;
+  }
+
+  .hud-btn-ghost:hover {
+    border-color: var(--primary);
+  }
+
+  .hud-panel {
+    background: color-mix(in oklch, var(--card) 92%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--sec, #ff4655) 35%, transparent);
+  }
+
+  .hud-card {
+    display: block;
+    border: 1px solid var(--border);
+    background: color-mix(in oklch, var(--card) 80%, transparent);
+  }
+
+  .hud-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      color-mix(in oklch, var(--foreground) 6%, transparent) 8px,
+      color-mix(in oklch, var(--foreground) 6%, transparent) 9px
+    );
+  }
+
+  .terminal-label {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .project-database {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .project-database {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+  }
+
+  .project-record {
+    display: flex;
+    height: auto;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+    white-space: normal;
+    border: 1px solid var(--border);
+    padding: 0.9rem;
+    text-align: left;
+  }
+
+  .project-record[aria-pressed="true"] {
+    border-color: var(--primary);
+  }
+
+  .record-summary {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--muted-foreground);
+  }
+
+  .project-media {
+    position: relative;
+    display: flex;
+    aspect-ratio: 16 / 9;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: color-mix(in oklch, var(--muted) 50%, transparent);
+  }
+
+  .media-index {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+  }
+
+  .tech-label {
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.45rem;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .skill-record,
+  .training-record,
+  .achievement-record {
+    border: 1px solid var(--border);
+    padding: 1rem;
+  }
+
+  .training-record {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .training-number {
+    font-size: 1.5rem;
+    letter-spacing: 0.12em;
+    color: var(--chart-3);
+  }
+
+  .skill-tag {
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .achievement-record {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .email-link {
+    width: 100%;
+  }
+
+  .crosshair {
+    position: relative;
+    width: 28px;
+    height: 28px;
+  }
+
+  .crosshair span {
+    position: absolute;
+    background: #f4f5f7;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 40%);
+  }
+
+  .crosshair span:nth-child(1),
+  .crosshair span:nth-child(2) {
+    left: 50%;
+    width: 2px;
+    height: 7px;
+    transform: translateX(-50%);
+  }
+
+  .crosshair span:nth-child(1) { top: 0; }
+  .crosshair span:nth-child(2) { bottom: 0; }
+
+  .crosshair span:nth-child(3),
+  .crosshair span:nth-child(4) {
+    top: 50%;
+    width: 7px;
+    height: 2px;
+    transform: translateY(-50%);
+  }
+
+  .crosshair span:nth-child(3) { left: 0; }
+  .crosshair span:nth-child(4) { right: 0; }
+
+  .crosshair i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3px;
+    height: 3px;
+    transform: translate(-50%, -50%);
+    background: #ff4655;
+  }
+
+  .crosshair-kick span:nth-child(1) { top: -3px; }
+  .crosshair-kick span:nth-child(2) { bottom: -3px; }
+  .crosshair-kick span:nth-child(3) { left: -3px; }
+  .crosshair-kick span:nth-child(4) { right: -3px; }
+
+  .hitmarker {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border: 2px solid #ff4655;
   }
 }
